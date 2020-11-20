@@ -1,0 +1,16 @@
+@import "reset.css";
+
+#app {
+	max-width: 1200px;
+	height: 100%;
+	margin: 0px auto;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.random__images {
+	height: 100%;
+	width: 100%;
+	align-self: center;
+}
