@@ -16,6 +16,7 @@ const getRandomIntInclusive = (min, max) => {
 const randomImage = links => links[getRandomIntInclusive(0, 6)];
 
 const getImagesFromSource = link => {
+	app.innerHTML = "";
 	const imageFromSource = document.createElement('img');
 	imageFromSource.setAttribute('class', 'random__images');
 	imageFromSource.setAttribute('alt', 'Random image');
@@ -23,4 +24,34 @@ const getImagesFromSource = link => {
 	app.appendChild(imageFromSource);
 };
 
-window.onload = getImagesFromSource(linksToImages);
+let secondsSinceLastActivity = 0;
+
+const maxInactivity = 5;
+
+setInterval(function () {
+	secondsSinceLastActivity++;
+	if (secondsSinceLastActivity > maxInactivity) {
+		getImagesFromSource(linksToImages);
+	}
+}, 5000);
+
+function activity() {
+	secondsSinceLastActivity = 0;
+
+}
+
+
+const activityEvents = [
+	'mousedown', 'mousemove', 'keydown',
+	'scroll', 'touchstart'
+];
+
+activityEvents.forEach(function (eventName) {
+	document.addEventListener(eventName, activity, true);
+	eventName.stopPropagation();
+});
+
+
+
+activityWatcher();
+
