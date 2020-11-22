@@ -1,5 +1,5 @@
-const INTERVAL_BETWEEN_IMAGES = 2000;
-const SCREEN_SAVER_IDLE = 3000;
+const INTERVAL_BETWEEN_IMAGES = 5000;
+const SCREEN_SAVER_IDLE = 10000;
 const app = document.querySelector('#app');
 const linksToImages = [
 	"https://images.pexels.com/photos/1275929/pexels-photo-1275929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=9060",
@@ -23,7 +23,30 @@ const getImagesFromSource = link => {
 	imageFromSource.setAttribute('class', 'random__images fade');
 	imageFromSource.setAttribute('alt', 'Random image');
 	imageFromSource.setAttribute('src', `${randomImage(link)}`);
+	imageFromSource.setAttribute('id', 'random-image');
 	app.appendChild(imageFromSource);
+	const element = document.getElementById('random-image');
+	let start;
+
+	function step(timestamp) {
+		if (start === undefined) {
+			start = timestamp;
+		}
+		const elapsed = timestamp - start;
+		if (elapsed < 1000) { // Stop the animation after 1 seconds
+			element.style.opacity = elapsed * 0.001;
+			window.requestAnimationFrame(step);
+		}
+		if (elapsed > 1000 && elapsed < 2000) {
+			window.requestAnimationFrame(step);
+		}
+		if (elapsed > 2000) {
+			element.style.opacity = (1 - (elapsed - 2000) * 0.001);
+			window.requestAnimationFrame(step);
+		}
+	}
+
+	window.requestAnimationFrame(step);
 };
 
 
