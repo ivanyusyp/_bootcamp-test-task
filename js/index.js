@@ -1,4 +1,6 @@
-const app = document.getElementById('app');
+const INTERVAL_BETWEEN_IMAGES = 2000;
+const SCREEN_SAVER_IDLE = 3000;
+const app = document.querySelector('#app');
 const linksToImages = [
 	"https://images.pexels.com/photos/1275929/pexels-photo-1275929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=9060",
 	"https://images.pexels.com/photos/1451074/pexels-photo-1451074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=450&w=560",
@@ -18,27 +20,11 @@ const randomImage = links => links[getRandomIntInclusive(0, 6)];
 const getImagesFromSource = link => {
 	app.innerHTML = "";
 	const imageFromSource = document.createElement('img');
-	imageFromSource.setAttribute('class', 'random__images');
+	imageFromSource.setAttribute('class', 'random__images fade');
 	imageFromSource.setAttribute('alt', 'Random image');
 	imageFromSource.setAttribute('src', `${randomImage(link)}`);
 	app.appendChild(imageFromSource);
 };
-
-let secondsSinceLastActivity = 0;
-
-const maxInactivity = 5;
-
-setInterval(function () {
-	secondsSinceLastActivity++;
-	if (secondsSinceLastActivity > maxInactivity) {
-		getImagesFromSource(linksToImages);
-	}
-}, 5000);
-
-function activity() {
-	secondsSinceLastActivity = 0;
-
-}
 
 
 const activityEvents = [
@@ -46,12 +32,33 @@ const activityEvents = [
 	'scroll', 'touchstart'
 ];
 
-activityEvents.forEach(function (eventName) {
-	document.addEventListener(eventName, activity, true);
-	eventName.stopPropagation();
-});
+window.onload = () => {
+	let showScreensaver;
+	let showScreensaverTimeout;
+	setTimeout(() => {
+		getImagesFromSource(linksToImages);
+		showScreensaver = setInterval(() => {
+			getImagesFromSource(linksToImages);
+		}, INTERVAL_BETWEEN_IMAGES);
+	}
+		, SCREEN_SAVER_IDLE);
+
+	activityEvents.forEach(eventName => {
+		document.addEventListener(eventName, () => {
+			app.innerHTML = "";
+			clearInterval(showScreensaver);
+			clearTimeout(showScreensaverTimeout);
+			showScreensaverTimeout = setTimeout(() => {
+				getImagesFromSource(linksToImages);
+				showScreensaver = setInterval(() => {
+					getImagesFromSource(linksToImages);
+				}, INTERVAL_BETWEEN_IMAGES)
+			}, SCREEN_SAVER_IDLE)
+		});
+	});
+}
 
 
 
-activityWatcher();
+
 
