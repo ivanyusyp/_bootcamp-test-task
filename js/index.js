@@ -1,5 +1,5 @@
-const INTERVAL_BETWEEN_IMAGES = 5000;
-const SCREEN_SAVER_IDLE = 10000;
+const INTERVAL_BETWEEN_IMAGES = 5000;//interval in miliseconds
+const SCREEN_SAVER_IDLE = 10000;//delay in miliseconds
 const app = document.querySelector('#app');
 const linksToImages = [
 	"https://images.pexels.com/photos/1275929/pexels-photo-1275929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=9060",
@@ -33,21 +33,25 @@ const getImagesFromSource = link => {
 			start = timestamp;
 		}
 		const elapsed = timestamp - start;
-		if (elapsed < 1000) { // Stop the animation after 1 seconds
+		const FADE_IN_TIME = INTERVAL_BETWEEN_IMAGES * 0.33;
+		const FADE_OUT_TIME = INTERVAL_BETWEEN_IMAGES * 0.66;
+
+
+		if (elapsed < FADE_IN_TIME) { // Stop the animation after 1 seconds
 			element.style.opacity = elapsed * 0.001;
 			window.requestAnimationFrame(step);
 		}
-		if (elapsed > 1000 && elapsed < 2000) {
+		if (elapsed > FADE_IN_TIME && elapsed < FADE_OUT_TIME) {
 			window.requestAnimationFrame(step);
 		}
-		if (elapsed > 2000) {
-			element.style.opacity = (1 - (elapsed - 2000) * 0.001);
+		if (elapsed > FADE_OUT_TIME) {
+			element.style.opacity = (1 - (elapsed - FADE_OUT_TIME) * 0.001);
 			window.requestAnimationFrame(step);
 		}
 	}
 
 	window.requestAnimationFrame(step);
-};
+}
 
 
 const activityEvents = [
